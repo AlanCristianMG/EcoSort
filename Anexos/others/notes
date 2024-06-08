@@ -1,0 +1,136 @@
+
+---------------------# PASO 1 DEFINICION DE TRANSFORMACIONES #-------------------
+
+*** FORMATO DE IMAGENES ***
+
+----**REDIMENSIONAMIENTO**
+
+    ** 128x128 pixeles es el tamaño al que se redimensionan las imagenes en moodelos de ision por computadora.
+        
+        * Redimensionar imagenes a estas dimensiones(128x128 pixeles) permite que el modelo procese la informacion de manera mas eficiente.
+
+    ** ConvNet ó CNN( Convulsional Neuronal Network) es una arquitectura de red neuronal utilizada para procesar imagenes.
+
+        * CNN es un tipo de machine learning diseñado principalmente para tareas que requieren reconocimento de objetos en imagenes, como clasificacion, deteccion y segmentación.
+
+        * La palabra "convulsion" en este contexto se refiere a una operacion matematica fundamental que se utiliza para procesar datos de imagenes. Esta operacion permite a la red o CNN aprender patrones locales en las imagenes de una manera similar a como lo hace el sistema visual humano. 
+        
+        *  Ejemplos de uso:
+            - vehiculos autonomos
+            - sistemas de camaras de seguridad
+        
+        * Las CNN utilizan capas Convulsionales para extraer caracteristicas y son esenciales para el procesamiento de imagenes.
+
+        * ¿Cómo funciona la convolución en una CNN?
+
+            - Filtro o kernel: La convolución se realiza utilizando un filtro o kernel, que es una matriz de pesos de pequeño tamaño. El filtro se desliza por la imagen de entrada, pixel a pixel, calculando el producto punto entre sus valores y los valores de la imagen en cada posición que visita.
+
+            - Suma de productos: Los resultados de estas multiplicaciones puntuales se suman y pasan por una función de activación, como la función ReLU, para generar un valor de salida. Este valor representa la activación del filtro en esa posición específica de la imagen.
+
+            - Mapa de características: La operación de convolución se repite a lo largo de toda la imagen, generando un mapa de características, que es una matriz del mismo tamaño que la imagen de entrada, pero con un menor número de canales (dependiendo del número de filtros utilizados).
+
+            - Extracción de patrones: El mapa de características contiene información sobre las características locales que el filtro ha detectado en la imagen. Por ejemplo, un filtro puede detectar bordes horizontales, mientras que otro puede detectar manchas de color rojo.
+
+----**CONVERSION A TENSORES DE PYTORCH**
+
+    ** Un tensor es una estructura de datos multidimensional que contiene elementos de un solo tipo de dato.
+    
+    ** Un tensor puede tener cualquier numero de dimensiones y cada dimension se llama eje.
+
+    ** Los tensores son la base de datos fundamental que reoresenta entradas y salidas y el estado interno de una red neuronal.
+
+    ** La imagen de entrada se convierte a formato PIL(Pillow) o en un arreglo numpy( en rango de [0.0, 1.0]), Osea un tensor
+
+    ** Si la imagen es una PIL Image con un rango de valores en [0, 255], se convierte en un tensor de forma (C x H x W), donde:
+
+        - C es el número de canales (por ejemplo, 1 para imágenes en escala de grises o 3 para imágenes RGB).
+        
+        - H y W son la altura y el ancho de la imagen, respectivamente.
+        
+        - Los valores del tensor están normalizados en el rango [0.0, 1.0].
+        
+        - Si la imagen no cumple con estas condiciones, se devuelve un tensor sin escalar.
+
+----**NORMALIZACION DE IMAGENES**
+
+------------------------# PASO 2 CARGA DE DATOS #--------------------------------
+
+----**PROCESAMIENTO POR LOTES O BATCH**
+
+    ** Consiste en ejecucion de un programa sin supervision del usuario.
+
+
+--------------------# PASO 3 DEFINICION DEL MODELO #------------------------------
+
+----**ARCHIVO "simple_cnn.py"**
+
+    ** Las redes neuronales son modelos de aprendizaje automático que imitan el funcionamiento del cerebro humano. Están compuestas por capas de nodos o neuronas artificiales, y cada capa tiene un propósito específico.
+
+    ** Una instancia es un objeto creado a partir de una clase que define sus   propiedades y funciones.
+
+    ** Max Pooling es una operación que se aplica entre dos capas de convolución. Su función principal es reducir el tamaño de las imágenes (o mapas de activaciones) mientras preserva las características esenciales.
+        
+        - Dado un mapa de activaciones (por ejemplo, después de aplicar una capa de convolución), el max-pooling divide la imagen en regiones (por lo general, cuadradas) y selecciona el valor máximo dentro de cada región.
+        
+        - Por ejemplo, si tenemos una región de 2x2 píxeles, el max-pooling tomará el valor máximo de esos 4 píxeles y lo asignará a un solo píxel en el mapa de activaciones resultante.
+        
+        - Este proceso reduce la resolución espacial de la imagen, lo que ayuda a reducir la cantidad de parámetros y a acelerar el procesamiento.
+    
+    **Funcion de ACTIVACION ReLU( Unidad Lineal Rectificada ) en una funcion de activacion no lineal comunmente utilizada en redes neuronales artificiales, especialmente en redes neuronales profundas
+
+        f(x) = max(0,x)
+    Donde: 
+        x es la entrada de la neurona
+        f es la salida de la nurona
+    En otras palabras, la funcion ReLU toma cualquier valor de entrada x y devulenve 0 si x es negativo, o el valor original de x si es positivo. Esto significa que la funcion ReLU RECTIFICA la entrada negativa a 0, mientras que deja pasar entradas positivas sin cambios.
+
+---------# PASO 4 DEFINICION DE LA FUNCION DE PERDIDA Y EL OPTIMIZADOR#-----------
+
+    ** Funcion de perdida(criterion), nn.CrossEntropyLoss() es una funcion de perdida usada en redes neuronales para problemas de clasificacion multiclase.
+        
+        - Entropia es una magnitudud fisica utilizada en termodinamica para describir el grado de desorden o aleatoriedad en un sistema.
+
+        - En redes neuronales la Entropia se relaciona con la incertidumbre o desorden en las predicciones de un modelo. En contexto de clasificacion la entropia mide cuanta incertidumbre hay en las probabilidades de las clases
+
+        - Dado un conjunto de predicciones(logits) y las etiquetas verdaderas(clases), la funcion CrossEntryLoss calcula la entropia cruzada entre las distribuciones de probabilidad predichas y las probabilidades reales
+
+    **El Optimizador es el responsable de actualizar los pesos y sesgos de las capas internas del modelo en funcion de la perdida calculada.
+
+    ** La tasa de aprendizaje controla cuanto ajusta el optimizador los pesos durante cada actualizacion.
+
+--------------------# PASO 5 ENTRENAMINETO DEL MODELO #--------------------------
+
+    ** Las epoch se refieren a un ciclo completo a traves del conjunto de datos de entrenamiento. Durante el ciclo, el algoritmo de aprendizaje automatico procesa todo el conjunto de datos una vez hacia delante y otra vez hacia atras. epoch indica el numero de pasadas que el algoritmo ha completado durante el entrenamiento.
+
+    ** Backward pass(Retropropagación) es un algoritmo fundamental en el entrenamiento de redes neuronales artificiales. Es un proceso iterativo que permite ajustar los pesos y sesgos de las neuronas en una red neuronal para minimizar el error entre las predicciones de la red y los valores reales.
+
+    ** El gradiente indica la direccion y la magnitud en la que se deben ajustar los peros para minimizar el error.
+
+    **Resumen del flujo de trabajo
+    
+        - Se define el número de épocas.
+        - Para cada época:
+            + Inicializa la pérdida acumulada.
+            + Para cada lote de datos en el conjunto de entrenamiento:
+                - Pone a cero los gradientes.
+                - Realiza una pasada hacia adelante para obtener las predicciones.
+                - Calcula la pérdida.
+                - Realiza la retropropagación para calcular los gradientes.
+                - Actualiza los parámetros del modelo.
+                - Acumula la pérdida del lote.
+            + Imprime la pérdida promedio al final de la época.
+        - Imprime un mensaje indicando que el entrenamiento ha terminado.
+
+
+--------------------# PASO 5 EVALUACION DEL MODELO #-----------------------------
+
+    ** Resumen del flujo de trabajo
+        
+        - Inicializa los contadores correct y total.
+        - Desactiva el cálculo de gradientes para ahorrar memoria y computación durante la evaluación.
+        - Para cada lote de datos en el conjunto de prueba:
+            + Realiza una pasada hacia adelante para obtener las predicciones.
+            + Determina las clases predichas con la mayor probabilidad.
+            + Actualiza el contador del número total de ejemplos procesados.
+            + Compara las predicciones con las etiquetas reales y cuenta las predicciones correctas.
+        - Calcula y muestra la precisión del modelo en el conjunto de prueba.
